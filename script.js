@@ -110,7 +110,7 @@ async function openNote(file) {
 }
 let noteFiles = [];
 let noteMeta = new Map();
-let noteFilter = '全部';
+const expandedNoteModules = new Set();
 let noteCatalogAvailable = false;
 const noteModuleOrder = ['项目总览', '建站部署', '界面设计', '内容管理', '交互功能', '问题修复', '项目交付', '我的笔记'];
 function noteDetails(file) {
@@ -120,10 +120,39 @@ function renderNotes() {
   const query = $('note-search').value.trim().toLocaleLowerCase();
   const shown = noteFiles.filter(file => {
     const info = noteDetails(file);
-    return (noteFilter === '全部' || info.module === noteFilter) && `${info.title} ${info.summary} ${info.module}`.toLocaleLowerCase().includes(query);
+    return `${info.title} ${info.summary} ${info.module}`.toLocaleLowerCase().includes(query);
   });
   $('note-grid').replaceChildren();
+  const groups = new Map();
   shown.forEach(file => {
+    const module = noteDetails(file).module;
+    if (!groups.has(module)) groups.set(module, []);
+    groups.get(module).push(file);
+  });
+  const modules = [...noteModuleOrder.filter(module => groups.has(module)), ...[...groups.keys()].filter(module => !noteModuleOrder.includes(module))];
+  modules.forEach((module, index) => {
+    const panel = element('details', undefined, 'note-module-panel');
+    panel.open = expandedNoteModules.has(module);
+    const summary = element('summary', undefined, 'note-module-summary');
+    const number = element('span', String(index + 1).padStart(2, '0'), 'note-module-number'); number.setAttribute('aria-hidden', 'true');
+    const name = element('span', module, 'note-module-title');
+    const count = element('span', `${groups.get(module).length} 篇笔记`, 'note-module-count');
+    const affordance = element('span', undefined, 'note-module-affordance'); affordance.setAttribute('aria-hidden', 'true');
+    const closed = element('span', '展开', 'when-closed');
+    const opened = element('span', '收起', 'when-open');
+    affordance.append(closed, opened, element('span', '⌄', 'note-module-chevron'));
+    summary.append(number, name, count, affordance);
+    const cards = element('div', undefined, 'module-notes');
+    panel.addEventListener('toggle', () => {
+      if (!panel.isConnected) return;
+      if (panel.open) expandedNoteModules.add(module); else expandedNoteModules.delete(module);
+    });
+    panel.append(summary, cards); $('note-grid').append(panel);
+    groups.get(module).forEach(file => cards.append(createNoteCard(file)));
+  });
+  $('note-status').textContent = noteFiles.length ? `${shown.length} / ${noteFiles.length} 篇记录 · ${modules.length} 个模块${shown.length ? ' · 点击模块标题展开' : ' · 没有匹配的笔记，请换个关键词'}${noteCatalogAvailable ? '' : ' · 模块信息暂未加载，可刷新重试'}` : '还没有笔记。记下今天学会的一件小事，就是很好的开始。';
+}
+function createNoteCard(file) {
     const info = noteDetails(file);
     const card = element('button', undefined, 'note-card'); card.type = 'button';
     const top = element('div', undefined, 'note-card-top');
@@ -131,21 +160,8 @@ function renderNotes() {
     const time = element('time', date || '学习记录'); if (date) time.dateTime = date;
     top.append(element('span', info.module, 'note-module'), time);
     card.append(top, element('h3', info.title), element('p', info.summary, 'note-summary'), element('span', '阅读任务记录 ↗', 'note-open'));
-    card.addEventListener('click', () => openNote(file)); $('note-grid').append(card);
-  });
-  $('note-status').textContent = noteFiles.length ? `${shown.length} / ${noteFiles.length} 篇记录${shown.length ? ' · 点击卡片阅读' : ' · 没有匹配的笔记，试试其他模块或关键词'}${noteCatalogAvailable ? '' : ' · 模块信息暂未加载，可刷新重试'}` : '还没有笔记。记下今天学会的一件小事，就是很好的开始。';
-}
-function renderNoteFilters() {
-  const modules = new Set(noteFiles.map(file => noteDetails(file).module));
-  const labels = ['全部', ...noteModuleOrder.filter(label => modules.has(label)), ...[...modules].filter(label => !noteModuleOrder.includes(label))];
-  if (!labels.includes(noteFilter)) noteFilter = '全部';
-  $('note-filters').replaceChildren();
-  labels.forEach(label => {
-    const button = element('button', label, 'note-filter'); button.type = 'button';
-    button.setAttribute('aria-pressed', String(label === noteFilter));
-    button.addEventListener('click', () => { noteFilter = label; renderNoteFilters(); renderNotes(); });
-    $('note-filters').append(button);
-  });
+    card.addEventListener('click', () => openNote(file));
+    return card;
 }
 async function loadNotes() {
   $('note-retry').disabled = true;
@@ -159,12 +175,16 @@ async function loadNotes() {
     noteMeta = new Map((noteCatalogAvailable ? metadata : []).filter(item => item && typeof item.path === 'string' && typeof item.title === 'string' && typeof item.module === 'string').map(item => [item.path, item]));
     noteFiles = files.filter(file => /\.md$/i.test(file.name) && file.name.toLowerCase() !== 'readme.md');
     noteFiles.sort((a, b) => (noteDetails(a).order ?? 999) - (noteDetails(b).order ?? 999));
-    renderNoteFilters(); renderNotes();
+    expandedNoteModules.clear(); renderNotes();
   } catch (error) { $('note-status').textContent = error.message || '笔记加载失败，请重试。'; }
   finally { $('note-retry').disabled = false; }
 }
 $('note-retry').addEventListener('click', loadNotes);
 $('note-search').addEventListener('input', renderNotes);
+$('notes-collapse-all').addEventListener('click', () => {
+  expandedNoteModules.clear();
+  $('note-grid').querySelectorAll('details').forEach(panel => { panel.open = false; });
+});
 const hobbyDescriptions = {
   '音乐': ['♫', '让旋律成为生活的背景音。'],
   '旅行': ['↗', '去看看日常之外的风景。'],
