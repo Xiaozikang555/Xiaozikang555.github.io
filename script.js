@@ -117,6 +117,7 @@ function noteDetails(file) {
   return noteMeta.get(file.path) || { title: fileInfo(file.name).title, module: '我的笔记', summary: '记录新的知识、理解与实践。', order: 999 };
 }
 function renderNotes() {
+  $('notes-folder-count').textContent = `${new Set(noteFiles.map(file => noteDetails(file).module)).size} 个模块 · ${noteFiles.length} 篇笔记`;
   const query = $('note-search').value.trim().toLocaleLowerCase();
   const shown = noteFiles.filter(file => {
     const info = noteDetails(file);
@@ -184,6 +185,13 @@ $('note-search').addEventListener('input', renderNotes);
 $('notes-collapse-all').addEventListener('click', () => {
   expandedNoteModules.clear();
   $('note-grid').querySelectorAll('details').forEach(panel => { panel.open = false; });
+  $('notes-folder').open = false;
+});
+$('notes-folder').addEventListener('toggle', () => {
+  if (!$('notes-folder').open) {
+    expandedNoteModules.clear();
+    $('note-grid').querySelectorAll('details').forEach(panel => { panel.open = false; });
+  }
 });
 const hobbyDescriptions = {
   '音乐': ['♫', '让旋律成为生活的背景音。'],
