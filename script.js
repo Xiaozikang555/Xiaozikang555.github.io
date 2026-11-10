@@ -108,24 +108,63 @@ async function openNote(file) {
     if (request === noteRequest && $('note-dialog').open) $('note-content').replaceChildren(renderNote(markdown));
   } catch (error) { if (request === noteRequest) $('note-content').textContent = error.message; }
 }
+let noteFiles = [];
+let noteMeta = new Map();
+let noteFilter = '全部';
+let noteCatalogAvailable = false;
+const noteModuleOrder = ['项目总览', '建站部署', '界面设计', '内容管理', '交互功能', '问题修复', '项目交付', '我的笔记'];
+function noteDetails(file) {
+  return noteMeta.get(file.path) || { title: fileInfo(file.name).title, module: '我的笔记', summary: '记录新的知识、理解与实践。', order: 999 };
+}
+function renderNotes() {
+  const query = $('note-search').value.trim().toLocaleLowerCase();
+  const shown = noteFiles.filter(file => {
+    const info = noteDetails(file);
+    return (noteFilter === '全部' || info.module === noteFilter) && `${info.title} ${info.summary} ${info.module}`.toLocaleLowerCase().includes(query);
+  });
+  $('note-grid').replaceChildren();
+  shown.forEach(file => {
+    const info = noteDetails(file);
+    const card = element('button', undefined, 'note-card'); card.type = 'button';
+    const top = element('div', undefined, 'note-card-top');
+    const date = fileInfo(file.name).date;
+    const time = element('time', date || '学习记录'); if (date) time.dateTime = date;
+    top.append(element('span', info.module, 'note-module'), time);
+    card.append(top, element('h3', info.title), element('p', info.summary, 'note-summary'), element('span', '阅读任务记录 ↗', 'note-open'));
+    card.addEventListener('click', () => openNote(file)); $('note-grid').append(card);
+  });
+  $('note-status').textContent = noteFiles.length ? `${shown.length} / ${noteFiles.length} 篇记录${shown.length ? ' · 点击卡片阅读' : ' · 没有匹配的笔记，试试其他模块或关键词'}${noteCatalogAvailable ? '' : ' · 模块信息暂未加载，可刷新重试'}` : '还没有笔记。记下今天学会的一件小事，就是很好的开始。';
+}
+function renderNoteFilters() {
+  const modules = new Set(noteFiles.map(file => noteDetails(file).module));
+  const labels = ['全部', ...noteModuleOrder.filter(label => modules.has(label)), ...[...modules].filter(label => !noteModuleOrder.includes(label))];
+  if (!labels.includes(noteFilter)) noteFilter = '全部';
+  $('note-filters').replaceChildren();
+  labels.forEach(label => {
+    const button = element('button', label, 'note-filter'); button.type = 'button';
+    button.setAttribute('aria-pressed', String(label === noteFilter));
+    button.addEventListener('click', () => { noteFilter = label; renderNoteFilters(); renderNotes(); });
+    $('note-filters').append(button);
+  });
+}
 async function loadNotes() {
   $('note-retry').disabled = true;
   $('note-status').textContent = '正在整理笔记…';
   try {
-    const files = (await listFiles('notes')).filter(file => /\.md$/i.test(file.name) && file.name.toLowerCase() !== 'readme.md');
-    $('note-grid').replaceChildren();
-    files.forEach(file => {
-      const info = fileInfo(file.name);
-      const card = element('button', undefined, 'note-card'); card.type = 'button';
-      const time = element('time', info.date || '学习记录'); if (info.date) time.dateTime = info.date;
-      card.append(time, element('h3', info.title), element('span', '阅读笔记 ↗'));
-      card.addEventListener('click', () => openNote(file)); $('note-grid').append(card);
-    });
-    $('note-status').textContent = files.length ? `${files.length} 篇学习记录` : '还没有笔记。记下今天学会的一件小事，就是很好的开始。';
+    const [files, metadata] = await Promise.all([
+      listFiles('notes'),
+      fetch(`notes/modules.json?v=${Date.now()}`, { signal: AbortSignal.timeout(15000) }).then(response => { if (!response.ok) throw new Error('metadata'); return response.json(); }).catch(() => null)
+    ]);
+    noteCatalogAvailable = Array.isArray(metadata);
+    noteMeta = new Map((noteCatalogAvailable ? metadata : []).filter(item => item && typeof item.path === 'string' && typeof item.title === 'string' && typeof item.module === 'string').map(item => [item.path, item]));
+    noteFiles = files.filter(file => /\.md$/i.test(file.name) && file.name.toLowerCase() !== 'readme.md');
+    noteFiles.sort((a, b) => (noteDetails(a).order ?? 999) - (noteDetails(b).order ?? 999));
+    renderNoteFilters(); renderNotes();
   } catch (error) { $('note-status').textContent = error.message || '笔记加载失败，请重试。'; }
   finally { $('note-retry').disabled = false; }
 }
 $('note-retry').addEventListener('click', loadNotes);
+$('note-search').addEventListener('input', renderNotes);
 const hobbyDescriptions = {
   '音乐': ['♫', '让旋律成为生活的背景音。'],
   '旅行': ['↗', '去看看日常之外的风景。'],
@@ -234,4 +273,3 @@ if ('IntersectionObserver' in window) {
 }
 document.addEventListener('visibilitychange', () => planetScene.classList.toggle('is-hidden', document.hidden));
 updatePlanetMotion();
-
