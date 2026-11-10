@@ -26,7 +26,7 @@
 
 点击「写学习笔记」，在 GitHub 编辑器中写 Markdown 并 Commit changes。笔记保存在 notes 目录，命名如 `2026-11-10_学习主题.md`。主页自动列出笔记；点击阅读，阅读窗口提供编辑入口。阅读器支持一级至三级标题、简单列表和代码块；其他 Markdown 语法以文本显示。笔记公开展示。
 
-相册和笔记通过 GitHub 公共 Contents API 读取，每个目录最多列出 1000 个文件；网络或 API 限流时页面会提示刷新重试。
+相册和笔记目录由 GitHub Pages 内置 Jekyll 在发布时生成到 collections.json，避免依赖公共目录 API。请勿添加 .nojekyll 文件。上传或修改后等待 Pages 发布完成，再刷新相册或笔记。笔记原文和照片从 GitHub 原始文件地址读取。
 
 ## 备忘录
 
