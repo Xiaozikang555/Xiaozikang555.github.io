@@ -8,11 +8,11 @@ layout: null
   {%- assign filepath = file.path | prepend: '/' | replace: '//', '/' -%}
   {%- assign photo_prefix = filepath | slice: 0, 8 -%}
   {%- assign note_prefix = filepath | slice: 0, 7 -%}
-  {%- if photo_prefix == '/photos/' or note_prefix == '/notes/' -%}
+  {%- assign hobby_prefix = filepath | slice: 0, 9 -%}
+  {%- if photo_prefix == '/photos/' or note_prefix == '/notes/' or hobby_prefix == '/hobbies/' -%}
     {%- unless first -%},{%- endunless -%}
     {%- assign first = false -%}
     {"type":"file","path":{{ filepath | remove_first: '/' | jsonify }},"name":{{ filepath | split: '/' | last | jsonify }},"sha":{{ site.time | date: '%s' | jsonify }}}
   {%- endif -%}
 {%- endfor -%}
 ]
-
