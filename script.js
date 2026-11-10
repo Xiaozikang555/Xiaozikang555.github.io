@@ -18,11 +18,17 @@ function rawUrl(file) {
   return `https://raw.githubusercontent.com/${REPOSITORY}/main/${file.path.split('/').map(encodeURIComponent).join('/')}?v=${encodeURIComponent(file.sha)}`;
 }
 async function listFiles(folder) {
-  const response = await fetch(`https://api.github.com/repos/${REPOSITORY}/contents/${folder}?ref=main`, { headers: { Accept: 'application/vnd.github+json' }, signal: AbortSignal.timeout(15000) });
-  if (!response.ok) throw new Error(response.status === 403 || response.status === 429 ? '访问频繁，请稍后再刷新。' : '暂时无法连接 GitHub，请稍后刷新。');
-  const files = await response.json();
+  const files = await getCatalog();
   if (!Array.isArray(files)) throw new Error('内容暂时无法读取。');
-  return files.filter(file => file.type === 'file').sort((a, b) => b.name.localeCompare(a.name, 'zh-CN', { numeric: true }));
+  return files.filter(file => file.type === 'file' && file.path.startsWith(`${folder}/`)).sort((a, b) => b.name.localeCompare(a.name, 'zh-CN', { numeric: true }));
+}
+let catalogPromise;
+function getCatalog() {
+  if (!catalogPromise) catalogPromise = fetch(`collections.json?v=${Date.now()}`, { signal: AbortSignal.timeout(15000) }).then(async response => {
+    if (!response.ok) throw new Error('内容正在发布或暂时无法加载，请稍后刷新。');
+    return response.json();
+  }).finally(() => { catalogPromise = null; });
+  return catalogPromise;
 }
 
 let photos = [];
@@ -173,3 +179,4 @@ window.addEventListener('storage', event => {
 renderMemos();
 loadPhotos();
 loadNotes();
+
