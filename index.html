@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#f5f5f7">
   <title>Xiaozikang555 · 个人主页</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261110-glass-sections">
-  <script src="script.js?v=20261110-static-journal" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261110-planets-hobbies">
+  <script src="script.js?v=20261110-hobbies" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">跳到主要内容</a>
   <header class="header">
     <nav class="nav wrap" aria-label="主导航">
       <a class="wordmark" href="#home" aria-label="回到首页">X<span>.</span></a>
-      <div class="nav-links"><a href="#about">关于</a><a href="#work">作品</a><a href="#life">相册</a><a href="#notes">笔记</a><a href="#memo">备忘录</a></div>
+      <div class="nav-links"><a href="#about">关于</a><a href="#work">作品</a><a href="#life">相册</a><a href="#notes">笔记</a><a href="#hobbies">爱好</a><a href="#memo">备忘录</a></div>
       <a class="nav-github" href="https://github.com/Xiaozikang555" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
@@ -25,7 +25,16 @@
       <h1 id="hero-title">保持好奇。<br><span>让想法发生。</span></h1>
       <p class="hero-description">你好，我是 <strong>Xiaozikang555</strong>。<br>欢迎来到我的个人空间，一切从这里开始。</p>
       <div class="hero-actions"><a class="button" href="#work">探索我的作品 <span aria-hidden="true">↗</span></a><a class="text-link" href="#about">认识一下 <span aria-hidden="true">↓</span></a></div>
-      <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="sphere"></div><div class="art-label">A LITTLE CURIOSITY.<br>ENDLESS POSSIBILITIES.</div><div class="art-index">01 — ∞</div></div>
+      <div class="hero-art planetarium" aria-hidden="true">
+        <div class="starfield"></div><div class="planet-aura"></div>
+        <div class="planet-core"><div class="planet-surface"></div><div class="planet-shade"></div></div>
+        <div class="planet-orbit orbit-cyan"><div class="orbiting-moon"><span></span></div></div>
+        <div class="planet-orbit orbit-peach"><div class="orbiting-moon"><span></span></div></div>
+        <div class="planet-orbit orbit-violet"><div class="orbiting-moon"><span></span></div></div>
+        <div class="planet-orbit orbit-ice"><div class="orbiting-moon"><span></span></div></div>
+        <div class="art-label">A UNIVERSE OF CURIOSITY.<br>ALWAYS IN MOTION.</div><div class="art-index">01 — ∞</div>
+      </div>
+      <button id="planet-toggle" type="button" class="glass-small planet-toggle" aria-pressed="false" aria-label="暂停星球动画">暂停动画 Ⅱ</button>
       <div class="hero-foot"><span>一个不断生长的个人空间</span><a href="#about">向下探索 <span aria-hidden="true">↓</span></a></div>
     </section>
     <section class="about wrap section" id="about" aria-labelledby="about-title">
@@ -47,14 +56,17 @@
       <div class="glass-help">笔记公开展示。登录 GitHub 后填写 Markdown 笔记，再点击 Commit changes 保存。文件名可用「2026-11-10_学习主题.md」。</div>
       <div id="note-grid" class="note-grid"></div><p id="note-status" class="collection-status" role="status">正在整理笔记…</p><button id="note-retry" class="glass-small" type="button">刷新笔记</button>
     </div></section>
-    <section class="section wrap" id="memo" aria-labelledby="memo-title"><div class="section-heading"><div><p class="eyebrow">05 / 我的备忘录 · LITTLE REMINDERS</p><h2 id="memo-title">先记下来，慢慢实现。</h2><p class="muted">给待办、灵感和生活里的小事，一个安放的地方。</p></div><button id="export-memos" class="glass-small" type="button">导出备忘录 ↓</button></div>
+    <section class="section wrap" id="hobbies" aria-labelledby="hobbies-title">
+      <div class="section-heading"><div><p class="eyebrow">05 / 兴趣爱好 · THINGS I LOVE</p><h2 id="hobbies-title">给喜欢的事，留点时间。</h2><p class="muted">音乐、旅行、运动与游戏，都是生活的一部分。</p></div><a id="new-hobby" class="button" href="https://github.com/Xiaozikang555/Xiaozikang555.github.io/new/main?filename=hobbies/新的爱好.md" target="_blank" rel="noopener noreferrer">记录我的热爱 ↗</a></div>
+      <div id="hobby-grid" class="hobby-grid" aria-label="我的兴趣爱好"></div><p id="hobby-status" class="collection-status" role="status">正在收集生活里的热爱…</p><button id="hobby-retry" type="button" class="glass-small">刷新爱好</button>
+    </section>
+    <section class="section wrap" id="memo" aria-labelledby="memo-title"><div class="section-heading"><div><p class="eyebrow">06 / 我的备忘录 · LITTLE REMINDERS</p><h2 id="memo-title">先记下来，慢慢实现。</h2><p class="muted">给待办、灵感和生活里的小事，一个安放的地方。</p></div><button id="export-memos" class="glass-small" type="button">导出备忘录 ↓</button></div>
       <div class="memo-panel"><div class="memo-label"><span>我的备忘录</span><span id="memo-count">0 件待完成</span></div><form id="memo-form"><label class="sr-only" for="memo-input">写下备忘内容</label><input id="memo-input" placeholder="有什么想记住的事？" maxlength="500" required autocomplete="off"><button class="button" type="submit">记下来 ＋</button></form><div class="memo-toolbar" role="group" aria-label="筛选备忘录"><button type="button" class="memo-filter selected" data-filter="all" aria-pressed="true">全部</button><button type="button" class="memo-filter" data-filter="active" aria-pressed="false">待完成</button><button type="button" class="memo-filter" data-filter="done" aria-pressed="false">已完成</button></div><ul id="memo-list"></ul><p id="memo-status" role="status"></p><p class="memo-privacy">保存在当前浏览器，不会上传到网站，也不会跨设备同步。清除浏览器数据会丢失，请定期导出。</p></div>
     </section>
-    <section class="connect section wrap" id="connect" aria-labelledby="connect-title"><p class="eyebrow">06 / SAY HELLO</p><h2 id="connect-title">下一次连接，<br><span>从一句你好开始。</span></h2><p class="muted">想了解更多？欢迎来我的 GitHub 看看。</p><a class="button" href="https://github.com/Xiaozikang555" target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <span aria-hidden="true">↗</span></a></section>
+    <section class="connect section wrap" id="connect" aria-labelledby="connect-title"><p class="eyebrow">07 / SAY HELLO</p><h2 id="connect-title">下一次连接，<br><span>从一句你好开始。</span></h2><p class="muted">想了解更多？欢迎来我的 GitHub 看看。</p><a class="button" href="https://github.com/Xiaozikang555" target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <span aria-hidden="true">↗</span></a></section>
   </main>
   <footer class="footer wrap"><span>© <span id="year">2026</span> Xiaozikang555</span><span>保持好奇，持续创造。</span><a href="#home">回到顶部 ↑</a></footer>
   <dialog id="photo-dialog" class="viewer-dialog"><button type="button" class="dialog-close" aria-label="关闭照片">×</button><img id="full-photo" alt=""><p id="full-caption"></p><div class="viewer-controls"><button id="previous-photo" type="button" aria-label="上一张照片">←</button><span id="photo-position"></span><button id="next-photo" type="button" aria-label="下一张照片">→</button></div></dialog>
   <dialog id="note-dialog" class="note-dialog"><div class="note-dialog-bar"><a id="edit-note" class="text-link" target="_blank" rel="noopener noreferrer">在 GitHub 编辑 ↗</a><button type="button" class="dialog-close" aria-label="关闭笔记">×</button></div><article id="note-content" aria-live="polite"></article></dialog>
 </body>
 </html>
-
