@@ -122,7 +122,37 @@ async function loadNotes() {
   finally { $('note-retry').disabled = false; }
 }
 $('note-retry').addEventListener('click', loadNotes);
+const hobbyDescriptions = {
+  '音乐': ['♫', '让旋律成为生活的背景音。'],
+  '旅行': ['↗', '去看看日常之外的风景。'],
+  '运动': ['◉', '让身体动起来，给心情一点空间。'],
+  '游戏': ['✧', '探索不同的世界，收集纯粹的快乐。']
+};
+async function loadHobbies() {
+  $('hobby-retry').disabled = true;
+  $('hobby-status').textContent = '正在收集生活里的热爱…';
+  try {
+    const files = (await listFiles('hobbies')).filter(file => /\.md$/i.test(file.name) && file.name.toLowerCase() !== 'readme.md');
+    const order = Object.keys(hobbyDescriptions);
+    files.sort((a, b) => { const rank = file => { const n = order.indexOf(fileInfo(file.name).title); return n < 0 ? order.length : n; }; return rank(a) - rank(b); });
+    $('hobby-grid').replaceChildren();
+    files.forEach((file, index) => {
+      const info = fileInfo(file.name);
+      const [symbol, description] = hobbyDescriptions[info.title] || ['✧', '记录这份喜欢，留住生活里的灵感。'];
+      const card = element('button', undefined, 'hobby-card'); card.type = 'button';
+      const top = element('div', undefined, 'hobby-card-top');
+      const icon = element('span', symbol, 'hobby-icon'); icon.setAttribute('aria-hidden', 'true');
+      top.append(icon, element('span', String(index + 1).padStart(2, '0'), 'hobby-number'));
+      card.append(top, element('h3', info.title), element('p', description), element('span', '打开兴趣手记 ↗', 'hobby-open'));
+      card.addEventListener('click', () => openNote(file)); $('hobby-grid').append(card);
+    });
+    $('hobby-status').textContent = files.length ? '' : '给喜欢的事留一个位置，从第一篇兴趣手记开始。';
+  } catch (error) { $('hobby-status').textContent = error.message || '爱好加载失败，请重试。'; }
+  finally { $('hobby-retry').disabled = false; }
+}
+$('hobby-retry').addEventListener('click', loadHobbies);
 const today = new Intl.DateTimeFormat('sv-SE').format(new Date());
+$('new-hobby').href = `${githubRoot}/new/main?filename=${encodeURIComponent(`hobbies/新的爱好-${Date.now().toString(36)}.md`)}&value=${encodeURIComponent('# 我的爱好\n\n## 为什么喜欢\n\n## 最近在做\n\n## 想尝试的事情\n')}`;
 $('new-note').href = `${githubRoot}/new/main?filename=${encodeURIComponent(`notes/${today}_学习笔记-${Date.now().toString(36)}.md`)}&value=${encodeURIComponent('# 今天的学习\n\n## 学习主题\n\n## 学到了什么\n\n## 我的理解\n\n## 下一步\n')}`;
 document.querySelectorAll('dialog').forEach(dialog => {
   dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
@@ -179,4 +209,24 @@ window.addEventListener('storage', event => {
 renderMemos();
 loadPhotos();
 loadNotes();
+loadHobbies();
 
+const planetScene = document.querySelector('.planetarium');
+const planetToggle = $('planet-toggle');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let planetPaused = false;
+function updatePlanetMotion() {
+  const paused = planetPaused || reducedMotion.matches;
+  planetScene.classList.toggle('is-paused', paused);
+  planetToggle.disabled = reducedMotion.matches;
+  planetToggle.textContent = reducedMotion.matches ? '已减少动态效果' : paused ? '播放动画 ▷' : '暂停动画 Ⅱ';
+  planetToggle.setAttribute('aria-label', reducedMotion.matches ? '已遵循系统减少动态效果设置' : paused ? '播放星球动画' : '暂停星球动画');
+  planetToggle.setAttribute('aria-pressed', String(paused));
+}
+planetToggle.addEventListener('click', () => { planetPaused = !planetPaused; updatePlanetMotion(); });
+reducedMotion.addEventListener('change', updatePlanetMotion);
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(entries => planetScene.classList.toggle('is-offscreen', !entries[0].isIntersecting)).observe(planetScene);
+}
+document.addEventListener('visibilitychange', () => planetScene.classList.toggle('is-hidden', document.hidden));
+updatePlanetMotion();
