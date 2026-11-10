@@ -30,3 +30,6 @@ dialog{background:linear-gradient(135deg,#edf5ffcc,#f2f6ffab);border-color:#ffff
 @media(max-width:720px){.notes-folder-summary{padding:24px 22px;gap:16px}.notes-folder-icon{width:50px;height:50px;border-radius:16px}.notes-folder-icon svg{width:30px;height:26px}.notes-folder-title{font-size:17px}.notes-folder-count{font-size:11px}.notes-folder-content{padding:20px 16px}.notes-folder-action{gap:9px;font-size:11px}}
 @media(max-width:420px){.notes-folder-summary{padding:22px 17px;gap:12px;flex-wrap:wrap}.notes-folder-title{font-size:15px}.notes-folder-icon{width:42px;height:44px}.notes-folder-label{gap:6px}.notes-folder-count{font-size:10px}.notes-folder-action{gap:6px;font-size:10px}.notes-folder-content{padding:18px 11px}.notes-folder{border-radius:23px}}
 @media(prefers-reduced-motion:reduce){.notes-folder-summary,.folder-chevron{transition:none}}
+/* Match the learning section to the other bounded content sections. */
+#notes{margin-block:72px;padding:64px 48px;border:1px solid #ffffffbd;border-top:2px solid #a7cde7c2;border-radius:32px}.notes-folder{width:100%;min-width:0}.notes-folder-label{flex:1;min-width:0}
+@media(max-width:720px){#notes{padding:36px 22px;margin-block:38px;border-radius:25px}#notes .notes-folder-summary{padding:22px 18px;gap:12px}}
