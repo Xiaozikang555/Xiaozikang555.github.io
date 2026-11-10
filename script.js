@@ -20,7 +20,11 @@ function rawUrl(file) {
 async function listFiles(folder) {
   const files = await getCatalog();
   if (!Array.isArray(files)) throw new Error('内容暂时无法读取。');
-  return files.filter(file => file.type === 'file' && file.path.startsWith(`${folder}/`)).sort((a, b) => b.name.localeCompare(a.name, 'zh-CN', { numeric: true }));
+  const unique = new Map();
+  for (const file of files) {
+    if (file.type === 'file' && typeof file.path === 'string' && file.path.startsWith(`${folder}/`)) unique.set(file.path, file);
+  }
+  return [...unique.values()].sort((a, b) => b.name.localeCompare(a.name, 'zh-CN', { numeric: true }));
 }
 let catalogPromise;
 function getCatalog() {
@@ -230,3 +234,4 @@ if ('IntersectionObserver' in window) {
 }
 document.addEventListener('visibilitychange', () => planetScene.classList.toggle('is-hidden', document.hidden));
 updatePlanetMotion();
+
