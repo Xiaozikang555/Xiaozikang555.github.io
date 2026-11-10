@@ -15,7 +15,7 @@
   <header class="header">
     <nav class="nav wrap" aria-label="主导航">
       <a class="wordmark" href="#home" aria-label="回到首页">X<span>.</span></a>
-      <div class="nav-links"><a href="#about">关于</a><a href="#work">作品</a><a href="#connect">联系</a></div>
+      <div class="nav-links"><a href="#about">关于</a><a href="#life">相册</a><a href="#notes">笔记</a><a href="#memo">备忘录</a></div>
       <a class="nav-github" href="https://github.com/Xiaozikang555" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
@@ -37,8 +37,23 @@
       <div class="work-grid"><a class="project project-main" href="#home"><div class="project-top"><span>WEB / 001</span><span aria-hidden="true">↗</span></div><div class="browser-art" aria-hidden="true"><div class="browser-top"><i></i><i></i><i></i></div><div class="mini-page"><span>X.</span><b>Less, but<br>better.</b><div></div></div></div><div class="project-info"><p class="eyebrow">你正在浏览</p><h3>我的个人主页</h3><p>用简洁的设计，开启属于自己的数字空间。</p></div></a>
       <a class="project project-github" href="https://github.com/Xiaozikang555?tab=repositories" target="_blank" rel="noopener noreferrer"><div class="project-top"><span>CODE / EXPLORE</span><span aria-hidden="true">↗</span></div><div class="code-art" aria-hidden="true">{<span> </span>}</div><div class="project-info"><p class="eyebrow">更多探索</p><h3>代码与想法</h3><p>前往 GitHub，查看我的公开仓库。</p></div></a></div>
     </div></section>
-    <section class="connect section wrap" id="connect" aria-labelledby="connect-title"><p class="eyebrow">03 / SAY HELLO</p><h2 id="connect-title">下一次连接，<br><span>从一句你好开始。</span></h2><p class="muted">想了解更多？欢迎来我的 GitHub 看看。</p><a class="button" href="https://github.com/Xiaozikang555" target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <span aria-hidden="true">↗</span></a></section>
+    <section class="section wrap" id="life" aria-labelledby="life-title">
+      <div class="section-heading"><div><p class="eyebrow">03 / LIFE IN FRAMES</p><h2 id="life-title">把日子，收藏成光。</h2><p class="muted">一张照片，一个值得记住的瞬间。</p></div><a class="button" href="https://github.com/Xiaozikang555/Xiaozikang555.github.io/upload/main/photos" target="_blank" rel="noopener noreferrer">上传照片 ↗</a></div>
+      <div class="glass-help"><span>照片将公开展示。登录 GitHub 后选择照片，点击 Commit changes 保存。</span><details><summary>如何添加日期和文字</summary><p>照片可命名为「2026-11-10_今天的晚霞.jpg」。日期和文字会自动显示在照片下方。支持 JPG、PNG、WebP、GIF、AVIF；建议每张压缩至 5 MB 以内。请先把手机 HEIC 照片转换为 JPG。</p></details></div>
+      <div id="photo-grid" class="photo-grid" aria-label="生活相册"></div><p id="photo-status" class="collection-status" role="status">正在翻开相册…</p><button id="photo-retry" class="glass-small" type="button">刷新相册</button>
+    </section>
+    <section class="section notes-section" id="notes" aria-labelledby="notes-title"><div class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">04 / LEARNING JOURNAL</p><h2 id="notes-title">学到的，都有回响。</h2><p class="muted">让知识沉淀，让每一点进步都有迹可循。</p></div><a id="new-note" class="button" href="https://github.com/Xiaozikang555/Xiaozikang555.github.io/new/main?filename=notes/学习笔记.md" target="_blank" rel="noopener noreferrer">写学习笔记 ↗</a></div>
+      <div class="glass-help">笔记公开展示。登录 GitHub 后填写 Markdown 笔记，再点击 Commit changes 保存。文件名可用「2026-11-10_学习主题.md」。</div>
+      <div id="note-grid" class="note-grid"></div><p id="note-status" class="collection-status" role="status">正在整理笔记…</p><button id="note-retry" class="glass-small" type="button">刷新笔记</button>
+    </div></section>
+    <section class="section wrap" id="memo" aria-labelledby="memo-title"><div class="section-heading"><div><p class="eyebrow">05 / LITTLE REMINDERS</p><h2 id="memo-title">先记下来，慢慢实现。</h2><p class="muted">给待办、灵感和生活里的小事，一个安放的地方。</p></div><button id="export-memos" class="glass-small" type="button">导出备忘录 ↓</button></div>
+      <div class="memo-panel"><div class="memo-label"><span>我的备忘录</span><span id="memo-count">0 件待完成</span></div><form id="memo-form"><label class="sr-only" for="memo-input">写下备忘内容</label><input id="memo-input" placeholder="有什么想记住的事？" maxlength="500" required autocomplete="off"><button class="button" type="submit">记下来 ＋</button></form><div class="memo-toolbar" role="group" aria-label="筛选备忘录"><button type="button" class="memo-filter selected" data-filter="all" aria-pressed="true">全部</button><button type="button" class="memo-filter" data-filter="active" aria-pressed="false">待完成</button><button type="button" class="memo-filter" data-filter="done" aria-pressed="false">已完成</button></div><ul id="memo-list"></ul><p id="memo-status" role="status"></p><p class="memo-privacy">保存在当前浏览器，不会上传到网站，也不会跨设备同步。清除浏览器数据会丢失，请定期导出。</p></div>
+    </section>
+    <section class="connect section wrap" id="connect" aria-labelledby="connect-title"><p class="eyebrow">06 / SAY HELLO</p><h2 id="connect-title">下一次连接，<br><span>从一句你好开始。</span></h2><p class="muted">想了解更多？欢迎来我的 GitHub 看看。</p><a class="button" href="https://github.com/Xiaozikang555" target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <span aria-hidden="true">↗</span></a></section>
   </main>
   <footer class="footer wrap"><span>© <span id="year">2026</span> Xiaozikang555</span><span>保持好奇，持续创造。</span><a href="#home">回到顶部 ↑</a></footer>
+  <dialog id="photo-dialog" class="viewer-dialog"><button type="button" class="dialog-close" aria-label="关闭照片">×</button><img id="full-photo" alt=""><p id="full-caption"></p><div class="viewer-controls"><button id="previous-photo" type="button" aria-label="上一张照片">←</button><span id="photo-position"></span><button id="next-photo" type="button" aria-label="下一张照片">→</button></div></dialog>
+  <dialog id="note-dialog" class="note-dialog"><div class="note-dialog-bar"><a id="edit-note" class="text-link" target="_blank" rel="noopener noreferrer">在 GitHub 编辑 ↗</a><button type="button" class="dialog-close" aria-label="关闭笔记">×</button></div><article id="note-content" aria-live="polite"></article></dialog>
 </body>
 </html>
